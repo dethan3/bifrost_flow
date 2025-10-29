@@ -1,123 +1,68 @@
 # Bifrost Flow
 
-> 极简流动性质押仪表盘 - 为 Web3 新手打造的 Bifrost 质押体验
+High-fidelity demo of a liquid-staking cockpit for the Bifrost ecosystem on Polkadot.
 
-## 🎯 项目简介
+## Overview
 
-Bifrost Flow 专注于提供一个极简、无干扰的质押体验的平台，让 Web3 新手能够轻松上手 Bifrost 流动性质押。
+Bifrost Flow reimagines the liquid staking journey with a cinematic interface and guided flows. The project aims to reduce the learning curve for Web3 newcomers while showcasing how vDOT minting and redemption can feel effortless.
 
-### 核心理念
+### Why it matters
+- **Onboarding first** – the layout focuses on the connect → stake → manage loop with minimal distractions.
+- **Production-ready primitives** – hooks, store, and connection manager mirror how a full app would integrate with Bifrost APIs and Polkadot extensions.
+- **Design-forward** – gradients, glassmorphism, and responsive cards set the tone for a flagship experience.
 
-- **极简设计**：只保留核心的质押-持有-赎回流程
-- **新手友好**：简化复杂的 DeFi 概念，提供清晰的操作指引
-- **互补定位**：不是取代 Bifrost 官方应用，而是作为新手的入门工具
+## Feature Highlights
+- Connect to any Substrate-compatible wallet via `@polkadot/extension-dapp`.
+- Live network health pill driven by a resilient RPC connection manager with automatic endpoint failover.
+- Portfolio dashboard for DOT and vDOT balances, wired to on-chain subscriptions.
+- Guided mint (DOT → vDOT) and redeem (vDOT → DOT) flows with quick presets, validation, and animated feedback.
+- Transaction toast system powered by the global store to surface pending/success/error states and hashes.
 
-## 🛠️ 技术栈
+## Tech Stack
+- **Framework** – React 19, Vite 7, TypeScript 5.9
+- **Styling** – Tailwind CSS with custom glassmorphism and gradient utilities
+- **State** – Zustand store for wallet, API, balance, and transaction status
+- **Polkadot SDK** – `@polkadot/api` for chain calls, `@polkadot/extension-dapp` for signer access
+- **Tooling** – pnpm, ESLint (flat config), PostCSS, Tailwind IntelliSense-friendly structure
 
-- **框架**: React 19 + TypeScript
-- **构建工具**: Vite 7
-- **样式**: Tailwind CSS 4
-- **状态管理**: Zustand
-- **区块链交互**: @polkadot/api + @polkadot/extension-dapp
 
-## 📦 快速开始
+## Getting Started
 
-### 安装依赖
+### Prerequisites
+- Node.js ≥ 18 (LTS recommended)
+- pnpm ≥ 9
+- A Chromium/Firefox browser with the Polkadot.js extension for end-to-end testing
 
-```bash
-pnpm install
-```
-
-### 开发模式
-
-```bash
-pnpm dev
-```
-
-### 构建生产版本
-
-```bash
-pnpm build
-```
-
-### RPC 配置
-
-应用默认会优先连接 `wss://hk.p.bifrost-rpc.liebi.com/ws`，并在断线时依次回退到 Liebi/Radium 提供的其他公共节点。若需要在特定环境中固定使用某个 RPC，可在根目录创建 `.env` 文件并设置：
+### Installation & scripts
 
 ```bash
-VITE_BIFROST_RPC=wss://hk.p.bifrost-rpc.liebi.com/ws
+pnpm install         # Install dependencies
+pnpm dev             # Launch Vite dev server
+pnpm lint            # Run ESLint
+pnpm build           # Type-check + production build
+pnpm preview         # Serve the production bundle
 ```
 
-清空该变量即可恢复内置的多节点轮询策略。
+### Environment configuration
+- The connection manager rotates across public Bifrost RPC endpoints by default.
+- To pin a custom endpoint (e.g., private node or testing network), create a `.env` file and set:
 
-## 📁 项目结构
+  ```bash
+  VITE_BIFROST_RPC=wss://your-bifrost-endpoint/ws
+  ```
 
-```
-bifrost-flow/
-├── src/
-│   ├── components/     # React 组件
-│   ├── hooks/          # 自定义 Hooks
-│   ├── store/          # Zustand 状态管理
-│   ├── types/          # TypeScript 类型定义
-│   ├── utils/          # 工具函数和常量
-│   ├── App.tsx         # 主应用组件
-│   └── main.tsx        # 应用入口
-├── public/             # 静态资源
-└── index.html          # HTML 模板
-```
+  Removing the variable restores the round-robin strategy.
 
-## 🎨 开发进度
+## Testing Notes
+- The flows rely on live chain data. Consult `TESTING_CHECKLIST.md` for recommended manual scenarios.
+- Westend or Bifrost testnets are ideal for rehearsing the mint/redeem lifecycle without risking real DOT. On mainnet you must keep ≥1 DOT as the existential deposit while covering transaction fees.
 
-- [x] 项目初始化和技术选型
-- [x] 基础依赖安装和配置
-- [x] 项目结构搭建
-- [ ] 钱包连接功能
-- [ ] 质押界面开发
-- [ ] 赎回功能实现
-- [ ] 持仓展示
+## Roadmap Ideas
+- Adaptive layout optimizations for smaller screens
+- Toast-to-history escalation (persist recent transactions)
+- USD valuation overlays via price oracles
+- Deeper analytics (reward accumulation, APY insights)
 
-
-## 产品需求文档 (PRD) - Bifrost Flow
-
-### 1. 项目愿景 (Vision)
-为 Web3 新用户提供最简单、最流畅的 Bifrost 流动性质押（vStaking）入门体验，成为他们进入 Bifrost 生态系统的第一个、也是最受信任的入口。并且为用户提供极致的 UX/UI 体验。
-
-### 2. 目标用户与问题陈述 (Target User & Problem)
-*   **目标用户**：对加密货币有基本了解，希望通过质押赚取被动收入，但被现有 DeFi 应用的复杂性所困扰的 Web3 新手。
-*   **问题陈述**：Bifrost 官方应用功能全面，但其信息密度和繁多的选项对新手构成了较高的学习门槛。市场缺乏一个只专注于核心质押流程、提供引导式体验的极简工具。
-
-### 3. 核心用户故事 (Core User Stories)
-1.  **连接钱包**：作为新用户，我想要轻松地连接我的 Polkadot 钱包，以便应用能识别我的资产。
-2.  **查看资产**：作为用户，我想要在一个干净的界面上，一眼就看到我钱包里有多少原生代币 (`DOT`) 和流动性质押代币 (`vDOT`)。
-3.  **进行质押**：作为用户，我想要在一个引导式的流程中完成质押，并清楚地看到我将收到多少 `vDOT`，从而充满信心地完成操作。
-4.  **追踪收益**：作为质押者，我想要清楚地看到我累计赚取了多少奖励，以感受质押带来的真实好处。
-5.  **赎回资产**：作为质押者，我想要一个简单的界面来赎回资产，并能用大白话告诉我不同赎回方式的区别，以便我能安全地取回资产。
-
-### 4. 功能需求清单 (MVP Scope for Hackathon)
-
-**P0 - 必须实现的核心功能 (Minimum Viable Product)**
-*   **[P0] 钱包连接模块**:
-    *   支持 Polkadot.js 等 Substrate 兼容钱包的连接与断开。
-    *   清晰地显示连接状态和当前用户的钱包地址。
-*   **[P0] 资产展示模块**:
-    *   实时读取并展示用户钱包的 `DOT` 和 `vDOT` 余额。
-*   **[P0] 铸造 (Mint) 模块**:
-    *   提供输入框供用户输入要质押的 `DOT` 数量。
-    *   提供清晰的“确认质押”按钮，点击后调用钱包进行交易签名。
-*   **[P0] 赎回 (Redeem) 模块**:
-    *   提供输入框供用户输入要赎回的 `vDOT` 数量。
-    *   提供“即时赎回”和“延迟赎回”两个选项，并附有极简的文字解释其利弊。
-    *   点击后调用钱包进行交易签名。
-
-**P1 - 提升体验的亮点功能 (Stretch Goals)**
-*   **[P1] 收益追踪器**:
-    *   在资产展示模块，显示一个数字：“累计收益: X.XXXX vDOT”。
-*   **[P1] 交易状态通知**:
-    *   在用户提交交易后，提供“处理中”、“成功”、“失败”的实时反馈。
-*   **[P1] 价值估算**:
-    *   调用价格 API，在资产余额旁显示其大致的美元价值。
-
-
-## 📝 License
+## License
 
 MIT
