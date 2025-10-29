@@ -24,6 +24,7 @@ export const useWallet = () => {
       }
       return true
     } catch (err) {
+      console.error('Failed to connect to wallet extension', err)
       setError('Failed to connect to wallet extension')
       return false
     }
@@ -64,6 +65,7 @@ export const useWallet = () => {
       
       setAccount(walletAccount)
     } catch (err) {
+      console.error('Failed to connect wallet', err)
       setError(err instanceof Error ? err.message : 'Failed to connect wallet')
     } finally {
       setIsConnecting(false)
@@ -93,6 +95,7 @@ export const useWallet = () => {
       const injector = await web3FromAddress(address)
       return injector.signer
     } catch (err) {
+      console.error('Failed to get signer from wallet', err)
       throw new Error('Failed to get signer from wallet')
     }
   }, [])

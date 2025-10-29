@@ -1,7 +1,7 @@
-import { TestDashboard } from './components/TestDashboard'
+import { Dashboard } from './components/Dashboard'
 
 function App() {
-  return <TestDashboard />
+  return <Dashboard />
 }
 
 export default App

@@ -4,7 +4,7 @@
 
 ## 🎯 项目简介
 
-Bifrost Flow 是为 **polkadot-hackathon-2025** 赛道二（Bifrost 流动性质押创新体验挑战）开发的项目。它专注于提供一个极简、无干扰的质押体验，让 Web3 新手能够轻松上手 Bifrost 流动性质押。
+Bifrost Flow 专注于提供一个极简、无干扰的质押体验的平台，让 Web3 新手能够轻松上手 Bifrost 流动性质押。
 
 ### 核心理念
 

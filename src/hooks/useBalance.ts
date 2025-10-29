@@ -3,11 +3,26 @@ import { useBifrost } from './useBifrost'
 import { useAppStore } from '../store'
 import type { UserBalances, TokenBalance } from '../types'
 
-const toChainJson = (value: unknown): any => {
-  if (value && typeof (value as { toJSON?: () => unknown }).toJSON === 'function') {
-    return (value as { toJSON: () => unknown }).toJSON()
+interface SystemAccountJson {
+  data?: {
+    free?: unknown
+    reserved?: unknown
+    frozen?: unknown
+    miscFrozen?: unknown
   }
-  return value
+}
+
+interface TokenAccountJson {
+  free?: unknown
+  reserved?: unknown
+  frozen?: unknown
+}
+
+const toChainJson = <T>(value: unknown): T => {
+  if (value && typeof (value as { toJSON?: () => unknown }).toJSON === 'function') {
+    return (value as { toJSON: () => unknown }).toJSON() as T
+  }
+  return value as T
 }
 
 const createZeroBalance = (): TokenBalance => ({
@@ -47,7 +62,7 @@ export const useBalance = () => {
     try {
       // Fetch DOT balance (native token)
       const dotAccountInfo = await api.query.system.account(account.address)
-      const dotJson = toChainJson(dotAccountInfo) as any
+      const dotJson = toChainJson<SystemAccountJson>(dotAccountInfo)
       const dotData = dotJson?.data ?? {}
       const dotFree = toStringSafe(dotData.free)
       const dotReserved = toStringSafe(dotData.reserved)
@@ -70,13 +85,12 @@ export const useBalance = () => {
         const vdotTokenId = { VToken: 'DOT' }
         const vdotAccountInfo = await api.query.tokens.accounts(account.address, vdotTokenId)
 
-        const vdotJson = toChainJson(vdotAccountInfo) as any
+        const vdotJson = toChainJson<TokenAccountJson>(vdotAccountInfo)
 
         if (vdotJson) {
-          const vdotData = vdotJson as any
-          const vdotFree = toStringSafe(vdotData?.free)
-          const vdotReserved = toStringSafe(vdotData?.reserved)
-          const vdotFrozen = toStringSafe(vdotData?.frozen)
+          const vdotFree = toStringSafe(vdotJson.free)
+          const vdotReserved = toStringSafe(vdotJson.reserved)
+          const vdotFrozen = toStringSafe(vdotJson.frozen)
 
           vdotBalance = {
             free: vdotFree,
@@ -125,7 +139,7 @@ export const useBalance = () => {
     const subscribeToBalances = async () => {
       try {
         unsubscribeDot = (await api.query.system.account(account.address, (accountInfo: unknown) => {
-          const dotJson = toChainJson(accountInfo) as any
+          const dotJson = toChainJson<SystemAccountJson>(accountInfo)
           const dotData = dotJson?.data ?? {}
           const dotFree = toStringSafe(dotData.free)
           const dotReserved = toStringSafe(dotData.reserved)
@@ -151,7 +165,7 @@ export const useBalance = () => {
           account.address,
           vdotTokenId,
           (vdotAccountInfo: unknown) => {
-            const vdotData = toChainJson(vdotAccountInfo) as any
+            const vdotData = toChainJson<TokenAccountJson>(vdotAccountInfo)
             const vdotFree = toStringSafe(vdotData?.free)
             const vdotReserved = toStringSafe(vdotData?.reserved)
             const vdotFrozen = toStringSafe(vdotData?.frozen)

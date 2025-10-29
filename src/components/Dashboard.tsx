@@ -4,7 +4,7 @@ import { useBalance } from '../hooks/useBalance'
 import { formatBalance, formatSubstrateAddress } from '../utils'
 import { UI_MESSAGES } from '../utils/constants'
 
-export const TestDashboard = () => {
+export const Dashboard = () => {
   const { account, isConnecting, error: walletError, connectWallet, disconnectWallet } = useWallet()
   const {
     isConnected,
@@ -20,7 +20,6 @@ export const TestDashboard = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Bifrost Flow</h1>
-          <p className="text-gray-300">Phase 1 Functionality Test</p>
         </div>
 
         {/* API Status Card */}
