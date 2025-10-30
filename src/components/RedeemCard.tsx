@@ -98,12 +98,12 @@ export const RedeemCard = () => {
   const disableAction = !account || isLoading || !amount
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_25px_65px_-45px_rgba(59,130,246,0.7)]">
+    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_25px_65px_-45px_rgba(59,130,246,0.7)] sm:p-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(59,130,246,0.2),_transparent_60%)]" />
-      <form className="relative space-y-6" onSubmit={handleSubmit}>
+      <form className="relative space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
         <header className="flex flex-col gap-2">
           <p className="text-sm uppercase tracking-[0.35em] text-white/70">Redeem</p>
-          <h2 className="text-2xl font-semibold text-white">Convert vDOT → DOT</h2>
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">Convert vDOT → DOT</h2>
           <p className="text-sm text-purple-100/90">
             Exit your liquid staking position. Choose instant liquidity or wait for the standard unlock period.
           </p>
@@ -129,7 +129,7 @@ export const RedeemCard = () => {
           })}
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-purple-100/80">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-purple-100/80 sm:px-5 sm:py-4">
           {REDEEM_MODES.map((item) =>
             item.value === mode ? (
               <p key={item.value}>{item.description}</p>
@@ -138,18 +138,18 @@ export const RedeemCard = () => {
         </div>
 
         <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs text-purple-100/80">
+          <div className="flex flex-col gap-1 text-xs text-purple-100/80 sm:flex-row sm:items-center sm:justify-between">
             <span>Amount</span>
-            <span>Available: {vdotAvailableDisplay} vDOT</span>
+            <span className="text-purple-100/70 sm:text-right">Available: {vdotAvailableDisplay} vDOT</span>
           </div>
           <div className="group relative">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/10 via-sky-500/10 to-white/10 opacity-0 transition group-hover:opacity-100" />
-            <div className="relative flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3">
+            <div className="relative flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 sm:py-3.5">
               <input
                 value={amount}
                 onChange={(event) => handleInputChange(event.target.value)}
                 placeholder="0.00"
-                className="flex-1 bg-transparent text-2xl font-semibold text-white outline-none placeholder:text-white/40"
+                className="flex-1 bg-transparent text-xl font-semibold text-white outline-none placeholder:text-white/40 sm:text-2xl"
                 inputMode="decimal"
               />
               <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
@@ -163,7 +163,7 @@ export const RedeemCard = () => {
                 key={preset}
                 type="button"
                 onClick={() => handlePreset(preset)}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-white/80 transition hover:border-white/20 hover:bg-white/15"
+                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/80 transition hover:border-white/20 hover:bg-white/15"
               >
                 {preset}%
               </button>
@@ -171,14 +171,14 @@ export const RedeemCard = () => {
             <button
               type="button"
               onClick={() => handlePreset(100)}
-              className="rounded-full border border-sky-400/50 bg-sky-500/20 px-3 py-1 text-xs font-semibold text-white transition hover:border-sky-300 hover:bg-sky-500/30"
+              className="rounded-full border border-sky-400/50 bg-sky-500/20 px-3 py-1.5 text-xs font-semibold text-white transition hover:border-sky-300 hover:bg-sky-500/30"
             >
               Max
             </button>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-purple-100/90">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-purple-100/90 sm:px-5 sm:py-4">
           <div className="flex items-center justify-between">
             <span>Estimated Output</span>
             <span className="font-semibold text-white">{estimatedDot} DOT</span>

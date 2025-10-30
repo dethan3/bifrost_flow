@@ -113,12 +113,12 @@ export const TransactionToast = () => {
 
   return (
     <div
-      className={`pointer-events-auto fixed bottom-6 right-6 z-[60] transition-all duration-300 ease-out ${
+      className={`pointer-events-auto fixed bottom-4 left-4 right-4 z-[60] transition-all duration-300 ease-out sm:bottom-6 sm:left-auto sm:right-6 sm:w-80 ${
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
       }`}
     >
       <div
-        className={`relative w-80 overflow-hidden rounded-3xl border ${
+        className={`relative w-full overflow-hidden rounded-3xl border sm:w-80 ${
           config?.border ?? 'border-white/20'
         } bg-slate-950/90 px-5 py-4 shadow-[0_25px_60px_-25px_rgba(14,116,144,0.6)] backdrop-blur-2xl`}
       >

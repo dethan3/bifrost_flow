@@ -45,7 +45,7 @@ export const BalanceCard = () => {
   )
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-[0_35px_80px_-50px_rgba(59,130,246,0.65)] transition hover:border-white/20 hover:shadow-[0_45px_90px_-55px_rgba(139,92,246,0.75)]">
+    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_35px_80px_-50px_rgba(59,130,246,0.65)] transition hover:border-white/20 hover:shadow-[0_45px_90px_-55px_rgba(139,92,246,0.75)] sm:p-6">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.18),_transparent_55%)]" />
       <div className="relative flex flex-col gap-6">
         <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -61,7 +61,7 @@ export const BalanceCard = () => {
               void refetch()
             }}
             disabled={isLoading || !account}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-medium text-white/80 transition hover:border-white/30 hover:bg-white/20 disabled:cursor-not-allowed disabled:border-white/5 disabled:text-white/40"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white/80 transition hover:border-white/30 hover:bg-white/20 disabled:cursor-not-allowed disabled:border-white/5 disabled:text-white/40 sm:w-auto sm:justify-start sm:py-1.5"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5v6h6m9-3c0-1.091-.312-2.138-.896-3.038a6.75 6.75 0 00-2.206-2.112A6.75 6.75 0 0012 1.5a6.75 6.75 0 00-6.75 6.75m0 9c0 1.091.312 2.138.896 3.038a6.75 6.75 0 002.206 2.112 6.75 6.75 0 003.648 1.1 6.75 6.75 0 006.75-6.75" />

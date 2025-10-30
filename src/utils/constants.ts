@@ -1,14 +1,36 @@
 // Bifrost Network Configuration
-export const BIFROST_NETWORK = {
-  name: 'Bifrost Polkadot',
-  rpcUrls: [
-    import.meta.env.VITE_BIFROST_RPC ?? 'wss://hk.p.bifrost-rpc.liebi.com/ws',
-    'wss://us.bifrost-rpc.liebi.com/ws',
-    'wss://eu.bifrost-polkadot-rpc.liebi.com/ws',
-    'wss://bifrost.public.curie.radiumblock.co/ws',
-  ],
-  chainId: 'bifrost-polkadot',
+const BIFROST_NETWORKS = {
+  mainnet: {
+    name: 'Bifrost Polkadot',
+    rpcUrls: [
+      import.meta.env.VITE_BIFROST_RPC ?? 'wss://hk.p.bifrost-rpc.liebi.com/ws',
+      'wss://us.bifrost-rpc.liebi.com/ws',
+      'wss://eu.bifrost-polkadot-rpc.liebi.com/ws',
+      'wss://bifrost.public.curie.radiumblock.co/ws',
+    ],
+    chainId: 'bifrost-polkadot',
+  },
+  testnet: {
+    name: 'Bifrost Rococo',
+    rpcUrls: [
+      import.meta.env.VITE_BIFROST_RPC ?? 'wss://bifrost-parachain-rococo.api.onfinality.io/public-ws',
+      'wss://rococo-bifrost-rpc.polkadot.io',
+    ],
+    chainId: 'bifrost-rococo',
+  },
 } as const
+
+type NetworkKey = keyof typeof BIFROST_NETWORKS
+
+const resolveNetworkKey = (): NetworkKey => {
+  const envValue = (import.meta.env.VITE_BIFROST_NETWORK ?? 'mainnet').toLowerCase().trim()
+  if (envValue === 'testnet' || envValue === 'rococo') {
+    return 'testnet'
+  }
+  return 'mainnet'
+}
+
+export const BIFROST_NETWORK = BIFROST_NETWORKS[resolveNetworkKey()]
 
 // Token Configuration
 export const TOKENS = {

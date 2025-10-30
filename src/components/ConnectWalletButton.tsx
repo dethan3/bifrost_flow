@@ -74,12 +74,12 @@ export const ConnectWalletButton = () => {
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative w-full sm:w-auto">
       <button
         type="button"
         onClick={toggleMenu}
         disabled={isConnecting}
-        className="group flex items-center gap-3 rounded-full border border-white/20 bg-gradient-to-r from-fuchsia-500/80 via-purple-500/80 to-indigo-500/80 px-5 py-2 text-sm font-semibold text-white shadow-[0_15px_35px_-15px_rgba(139,92,246,0.8)] backdrop-blur transition hover:scale-[1.02] hover:shadow-[0_20px_45px_-15px_rgba(236,72,153,0.9)] focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+        className="group flex w-full items-center gap-3 rounded-full border border-white/20 bg-gradient-to-r from-fuchsia-500/80 via-purple-500/80 to-indigo-500/80 px-4 py-2 text-sm font-semibold text-white shadow-[0_15px_35px_-15px_rgba(139,92,246,0.8)] backdrop-blur transition hover:scale-[1.02] hover:shadow-[0_20px_45px_-15px_rgba(236,72,153,0.9)] focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5"
       >
         <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10">
           {account ? (
@@ -100,13 +100,13 @@ export const ConnectWalletButton = () => {
       </button>
 
       {error && (
-        <div className="absolute -bottom-14 left-0 z-10 w-64 rounded-2xl border border-rose-500/40 bg-rose-500/25 px-4 py-2 text-xs text-rose-100 shadow-[0_10px_30px_rgba(244,63,94,0.35)]">
+        <div className="absolute -bottom-16 left-0 z-10 w-full rounded-2xl border border-rose-500/40 bg-rose-500/25 px-4 py-2 text-xs text-rose-100 shadow-[0_10px_30px_rgba(244,63,94,0.35)] sm:w-64">
           {error}
         </div>
       )}
 
       {account && isMenuOpen && (
-        <div className="absolute right-0 top-14 z-20 w-72 origin-top-right rounded-3xl border border-white/15 bg-slate-950/90 p-4 text-xs text-purple-50 shadow-[0_18px_50px_rgba(79,70,229,0.4)] backdrop-blur-xl">
+        <div className="absolute left-0 right-0 top-14 z-20 w-full origin-top rounded-3xl border border-white/15 bg-slate-950/90 p-4 text-xs text-purple-50 shadow-[0_18px_50px_rgba(79,70,229,0.4)] backdrop-blur-xl sm:left-auto sm:right-0 sm:w-72 sm:origin-top-right">
           <div className="mb-3 flex items-start justify-between gap-3">
             <div>
               <p className="text-sm font-semibold text-white">{account.name ?? 'Active Account'}</p>

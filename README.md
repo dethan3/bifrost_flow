@@ -45,17 +45,23 @@ pnpm preview         # Serve the production bundle
 
 ### Environment configuration
 - The connection manager rotates across public Bifrost RPC endpoints by default.
-- To pin a custom endpoint (e.g., private node or testing network), create a `.env` file and set:
+- Switch between environments by setting `VITE_BIFROST_NETWORK` to `mainnet` (default) or `testnet` (Rococo).
+- To pin a custom endpoint (private node or staging cluster), add `VITE_BIFROST_RPC` to `.env`:
 
   ```bash
+  VITE_BIFROST_NETWORK=testnet
   VITE_BIFROST_RPC=wss://your-bifrost-endpoint/ws
   ```
 
-  Removing the variable restores the round-robin strategy.
+  Remove `VITE_BIFROST_RPC` to fall back to the bundled round-robin list.
 
 ## Testing Notes
-- The flows rely on live chain data. Consult `TESTING_CHECKLIST.md` for recommended manual scenarios.
-- Westend or Bifrost testnets are ideal for rehearsing the mint/redeem lifecycle without risking real DOT. On mainnet you must keep ≥1 DOT as the existential deposit while covering transaction fees.
+- The flows rely on live chain data. Westend or Bifrost testnets are ideal for rehearsing the mint/redeem lifecycle without risking real DOT. On mainnet you must keep ≥1 DOT as the existential deposit while covering transaction fees.
+- Testnet quick start:
+  1. Create a `.env` file with `VITE_BIFROST_NETWORK=testnet` and optionally override `VITE_BIFROST_RPC`.
+  2. Restart `pnpm dev` so Vite picks up the new environment variables.
+  3. Switch your Polkadot.js extension to Rococo and request test assets from a Bifrost faucet or the Westend/Rococo faucet channels.
+  4. Connect the wallet and walk through mint/redeem to validate the full staking loop.
 
 ## Roadmap Ideas
 - Adaptive layout optimizations for smaller screens
