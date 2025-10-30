@@ -1,34 +1,42 @@
-import { FormEvent, useMemo, useState } from 'react'
-import { useWallet } from '../hooks/useWallet'
-import { useBalance } from '../hooks/useBalance'
-import { useMint } from '../hooks/useMint'
-import { formatBalance, parseBalance, TOKEN_DECIMALS, UI_MESSAGES } from '../utils'
+/**
+ * EVM 版本的 MintCard
+ * 使用 useMintEVM 和 useBalancesEVM
+ */
+
+import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useAccount } from 'wagmi'
+import { formatEther } from 'viem'
+import { useMintEVM } from '../hooks/useMintEVM'
+import { useBalancesEVM } from '../hooks/useBalancesEVM'
+import { UI_MESSAGES } from '../utils'
 
 const QUICK_PRESETS = [25, 50, 75, 100] as const
 
 export const MintCard = () => {
-  const { account } = useWallet()
-  const { balances } = useBalance()
-  const { mint, isLoading, error } = useMint()
+  const { address: account } = useAccount()
+  const { nativeBalance } = useBalancesEVM()
+  const { mint, isLoading, error } = useMintEVM()
 
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  const dotAvailableRaw = balances?.dot.free ?? '0'
-  const dotAvailableDisplay = useMemo(
-    () => formatBalance(dotAvailableRaw, TOKEN_DECIMALS.DOT, 4),
-    [dotAvailableRaw]
-  )
+  // 格式化 ETH 余额（限制小数位）
+  const ethAvailableDisplay = useMemo(() => {
+    const formatted = formatEther(nativeBalance)
+    return Number(formatted).toFixed(4)
+  }, [nativeBalance])
 
   const handlePreset = (percentage: (typeof QUICK_PRESETS)[number]) => {
     if (!account) {
-      setLocalError('Connect your wallet to mint vDOT')
+      setLocalError('Connect your wallet to mint vETH')
       return
     }
 
-    const raw = (BigInt(dotAvailableRaw) * BigInt(percentage)) / BigInt(100)
-    const formatted = formatBalance(raw.toString(), TOKEN_DECIMALS.DOT, 4)
-    setAmount(formatted)
+    const raw = (nativeBalance * BigInt(percentage)) / BigInt(100)
+    const formatted = formatEther(raw)
+    const display = Number(formatted).toFixed(4)
+    setAmount(display)
     setLocalError(null)
   }
 
@@ -43,7 +51,7 @@ export const MintCard = () => {
     event.preventDefault()
 
     if (!account) {
-      setLocalError('Connect your wallet to mint vDOT')
+      setLocalError('Connect your wallet to mint vETH')
       return
     }
 
@@ -53,22 +61,26 @@ export const MintCard = () => {
     }
 
     try {
-      const rawAmount = parseBalance(amount, TOKEN_DECIMALS.DOT)
-      const rawBigInt = BigInt(rawAmount)
+      const amountNum = Number(amount)
 
-      if (rawBigInt <= BigInt(0)) {
+      if (amountNum <= 0) {
         setLocalError('Enter an amount greater than 0')
         return
       }
 
-      if (rawBigInt > BigInt(dotAvailableRaw)) {
-        setLocalError('Amount exceeds available DOT balance')
+      const availableNum = Number(formatEther(nativeBalance))
+      if (amountNum > availableNum) {
+        setLocalError('Amount exceeds available ETH balance')
         return
       }
 
       setLocalError(null)
-      await mint({ amount: rawAmount, tokenSymbol: 'DOT' })
-      setAmount('')
+      await mint({ amount, asset: 'eth' })
+      
+      // 成功后清空输入
+      if (!isLoading) {
+        setAmount('')
+      }
     } catch (submissionError) {
       const message =
         submissionError instanceof Error ? submissionError.message : 'Failed to submit mint transaction'
@@ -76,7 +88,7 @@ export const MintCard = () => {
     }
   }
 
-  const estimatedVdot = amount && Number(amount) > 0 ? amount : '0'
+  const estimatedVeth = amount && Number(amount) > 0 ? amount : '0'
   const disableAction = !account || isLoading || !amount
 
   return (
@@ -85,16 +97,16 @@ export const MintCard = () => {
       <form className="relative space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
         <header className="flex flex-col gap-2">
           <p className="text-sm uppercase tracking-[0.35em] text-white/70">Mint</p>
-          <h2 className="text-xl font-semibold text-white sm:text-2xl">Convert DOT → vDOT</h2>
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">Convert ETH → vETH</h2>
           <p className="text-sm text-purple-100/90">
-            Stake your DOT and receive liquid vDOT to stay flexible while earning staking rewards.
+            Stake your ETH and receive liquid vETH to stay flexible while earning staking rewards.
           </p>
         </header>
 
         <div className="space-y-2">
           <div className="flex flex-col gap-1 text-xs text-purple-100/80 sm:flex-row sm:items-center sm:justify-between">
             <span>Amount</span>
-            <span className="text-purple-100/70 sm:text-right">Available: {dotAvailableDisplay} DOT</span>
+            <span className="text-purple-100/70 sm:text-right">Available: {ethAvailableDisplay} ETH</span>
           </div>
           <div className="group relative">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/10 via-purple-500/10 to-white/10 opacity-0 transition group-hover:opacity-100" />
@@ -107,7 +119,7 @@ export const MintCard = () => {
                 inputMode="decimal"
               />
               <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
-                DOT
+                ETH
               </span>
             </div>
           </div>
@@ -135,16 +147,16 @@ export const MintCard = () => {
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-purple-100/90 sm:px-5 sm:py-4">
           <div className="flex items-center justify-between">
             <span>Estimated Output</span>
-            <span className="font-semibold text-white">{estimatedVdot} vDOT</span>
+            <span className="font-semibold text-white">{estimatedVeth} vETH</span>
           </div>
           <p className="mt-2 text-xs text-purple-100/70">
-            1 DOT mints approximately 1 vDOT. Final amount may vary slightly due to on-chain fees.
+            1 ETH mints approximately 1 vETH. Final amount may vary slightly due to on-chain fees.
           </p>
         </div>
 
         {(localError || error) && (
           <div className="rounded-2xl border border-rose-500/50 bg-rose-500/20 px-4 py-3 text-xs text-rose-100">
-            {localError ?? error}
+            {localError ?? (error?.message || 'Transaction failed')}
           </div>
         )}
 

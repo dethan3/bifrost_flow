@@ -1,52 +1,42 @@
-import { FormEvent, useMemo, useState } from 'react'
-import { useWallet } from '../hooks/useWallet'
-import { useBalance } from '../hooks/useBalance'
-import { useRedeem } from '../hooks/useRedeem'
-import { formatBalance, parseBalance, TOKEN_DECIMALS, UI_MESSAGES } from '../utils'
-import type { RedeemType } from '../types'
+/**
+ * EVM 版本的 RedeemCard
+ * 使用 useRedeemEVM 和 useBalancesEVM
+ */
 
-const REDEEM_MODES: { label: string; value: RedeemType; description: string }[] = [
-  {
-    label: 'Standard',
-    value: 'standard',
-    description: 'No fee. Unlocks after the native unbonding period (~28 days).',
-  },
-  {
-    label: 'Instant',
-    value: 'instant',
-    description: 'Small fee applies. Receive DOT immediately using liquidity pools.',
-  },
-]
+import { useMemo, useState } from 'react'
+import type { FormEvent } from 'react'
+import { useAccount } from 'wagmi'
+import { formatEther } from 'viem'
+import { useRedeemEVM } from '../hooks/useRedeemEVM'
+import { useBalancesEVM } from '../hooks/useBalancesEVM'
+import { UI_MESSAGES } from '../utils'
+
+// EVM 上只支持即时赎回
+// 未来可以根据实际协议支持情况添加更多模式
 
 export const RedeemCard = () => {
-  const { account } = useWallet()
-  const { balances } = useBalance()
-  const { redeem, isLoading, error } = useRedeem()
+  const { address: account } = useAccount()
+  const { vethBalance } = useBalancesEVM()
+  const { redeem, isLoading, error, needsApproval } = useRedeemEVM()
 
   const [amount, setAmount] = useState('')
-  const [mode, setMode] = useState<RedeemType>('standard')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  const vdotAvailableRaw = balances?.vdot.free ?? '0'
-  const vdotAvailableDisplay = useMemo(
-    () => formatBalance(vdotAvailableRaw, TOKEN_DECIMALS.VDOT, 4),
-    [vdotAvailableRaw]
-  )
-
-  const handleModeSelect = (value: RedeemType) => {
-    setMode(value)
-    setLocalError(null)
-  }
+  const vethAvailableDisplay = useMemo(() => {
+    const formatted = formatEther(vethBalance)
+    return Number(formatted).toFixed(4)
+  }, [vethBalance])
 
   const handlePreset = (percentage: number) => {
     if (!account) {
-      setLocalError('Connect your wallet to redeem vDOT')
+      setLocalError('Connect your wallet to redeem vETH')
       return
     }
 
-    const raw = (BigInt(vdotAvailableRaw) * BigInt(percentage)) / BigInt(100)
-    const formatted = formatBalance(raw.toString(), TOKEN_DECIMALS.VDOT, 4)
-    setAmount(formatted)
+    const raw = (vethBalance * BigInt(percentage)) / BigInt(100)
+    const formatted = formatEther(raw)
+    const display = Number(formatted).toFixed(4)
+    setAmount(display)
     setLocalError(null)
   }
 
@@ -61,7 +51,7 @@ export const RedeemCard = () => {
     event.preventDefault()
 
     if (!account) {
-      setLocalError('Connect your wallet to redeem vDOT')
+      setLocalError('Connect your wallet to redeem vETH')
       return
     }
 
@@ -71,22 +61,25 @@ export const RedeemCard = () => {
     }
 
     try {
-      const rawAmount = parseBalance(amount, TOKEN_DECIMALS.VDOT)
-      const rawBigInt = BigInt(rawAmount)
+      const amountNum = Number(amount)
 
-      if (rawBigInt <= BigInt(0)) {
+      if (amountNum <= 0) {
         setLocalError('Enter an amount greater than 0')
         return
       }
 
-      if (rawBigInt > BigInt(vdotAvailableRaw)) {
-        setLocalError('Amount exceeds available vDOT balance')
+      const availableNum = Number(formatEther(vethBalance))
+      if (amountNum > availableNum) {
+        setLocalError('Amount exceeds available vETH balance')
         return
       }
 
       setLocalError(null)
-      await redeem({ amount: rawAmount, isInstant: mode === 'instant' })
-      setAmount('')
+      await redeem({ amount, asset: 'eth' })
+      
+      if (!isLoading) {
+        setAmount('')
+      }
     } catch (submissionError) {
       const message =
         submissionError instanceof Error ? submissionError.message : 'Failed to submit redeem transaction'
@@ -94,7 +87,8 @@ export const RedeemCard = () => {
     }
   }
 
-  const estimatedDot = amount && Number(amount) > 0 ? amount : '0'
+  const estimatedEth = amount && Number(amount) > 0 ? amount : '0'
+  const needsApprove = needsApproval(amount || '0', 'eth')
   const disableAction = !account || isLoading || !amount
 
   return (
