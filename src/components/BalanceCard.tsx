@@ -1,7 +1,13 @@
+/**
+ * EVM 版本的 BalanceCard
+ * 使用 useBalancesEVM
+ */
+
 import { useMemo } from 'react'
-import { useWallet } from '../hooks/useWallet'
-import { useBalance } from '../hooks/useBalance'
-import { formatBalance, formatSubstrateAddress, UI_MESSAGES, TOKEN_DECIMALS } from '../utils'
+import { useAccount } from 'wagmi'
+import { formatEther } from 'viem'
+import { useBalancesEVM } from '../hooks/useBalancesEVM'
+import { UI_MESSAGES } from '../utils'
 
 const BalanceRow = ({ label, value, accent }: { label: string; value: string; accent?: boolean }) => (
   <div className="flex items-center justify-between">
@@ -11,38 +17,20 @@ const BalanceRow = ({ label, value, accent }: { label: string; value: string; ac
 )
 
 export const BalanceCard = () => {
-  const { account } = useWallet()
-  const { balances, isLoading, refetch } = useBalance()
+  const { address: account } = useAccount()
+  const { nativeBalance, vethBalance, isLoading, refetchAll } = useBalancesEVM()
 
-  const dotBalance = balances?.dot
-  const vdotBalance = balances?.vdot
+  // 格式化 ETH 余额
+  const ethDisplay = useMemo(() => {
+    const formatted = formatEther(nativeBalance)
+    return Number(formatted).toFixed(4)
+  }, [nativeBalance])
 
-  const dotAvailable = useMemo(
-    () => formatBalance(dotBalance?.free ?? '0', TOKEN_DECIMALS.DOT, 4),
-    [dotBalance?.free]
-  )
-  const vdotAvailable = useMemo(
-    () => formatBalance(vdotBalance?.free ?? '0', TOKEN_DECIMALS.VDOT, 4),
-    [vdotBalance?.free]
-  )
-
-  const dotReserved = useMemo(
-    () => formatBalance(dotBalance?.reserved ?? '0', TOKEN_DECIMALS.DOT, 4),
-    [dotBalance?.reserved]
-  )
-  const vdotReserved = useMemo(
-    () => formatBalance(vdotBalance?.reserved ?? '0', TOKEN_DECIMALS.VDOT, 4),
-    [vdotBalance?.reserved]
-  )
-
-  const dotTotal = useMemo(
-    () => formatBalance(dotBalance?.total ?? '0', TOKEN_DECIMALS.DOT, 4),
-    [dotBalance?.total]
-  )
-  const vdotTotal = useMemo(
-    () => formatBalance(vdotBalance?.total ?? '0', TOKEN_DECIMALS.VDOT, 4),
-    [vdotBalance?.total]
-  )
+  // 格式化 vETH 余额
+  const vethDisplay = useMemo(() => {
+    const formatted = formatEther(vethBalance)
+    return Number(formatted).toFixed(4)
+  }, [vethBalance])
 
   return (
     <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-[0_35px_80px_-50px_rgba(59,130,246,0.65)] transition hover:border-white/20 hover:shadow-[0_45px_90px_-55px_rgba(139,92,246,0.75)] sm:p-6">
@@ -52,13 +40,13 @@ export const BalanceCard = () => {
           <div>
             <h2 className="text-xl font-semibold text-white sm:text-2xl">Portfolio Balance</h2>
             <p className="text-sm text-purple-100/80">
-              {account ? formatSubstrateAddress(account.address) : 'Connect your Polkadot wallet to view balances'}
+              {account ? `${account.slice(0, 6)}...${account.slice(-4)}` : 'Connect your EVM wallet to view balances'}
             </p>
           </div>
           <button
             type="button"
             onClick={() => {
-              void refetch()
+              void refetchAll()
             }}
             disabled={isLoading || !account}
             className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white/80 transition hover:border-white/30 hover:bg-white/20 disabled:cursor-not-allowed disabled:border-white/5 disabled:text-white/40 sm:w-auto sm:justify-start sm:py-1.5"
@@ -74,7 +62,7 @@ export const BalanceCard = () => {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-purple-100/80">
             <p className="font-medium text-white">Wallet not connected</p>
             <p className="mt-1 text-sm text-purple-100/70">
-              {UI_MESSAGES.CONNECT_WALLET} to load your DOT and vDOT balances.
+              {UI_MESSAGES.CONNECT_WALLET} to load your ETH and vETH balances.
             </p>
           </div>
         ) : (
@@ -82,31 +70,31 @@ export const BalanceCard = () => {
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500/30 via-purple-500/25 to-sky-500/25 p-5 shadow-[0_20px_45px_-35px_rgba(129,140,248,0.8)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-white/70">Available DOT</p>
-                  <p className="mt-2 text-3xl font-semibold text-white">{dotAvailable}</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-white/70">Available ETH</p>
+                  <p className="mt-2 text-3xl font-semibold text-white">{ethDisplay}</p>
                 </div>
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white">
-                  DOT
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-xs font-semibold text-white">
+                  ETH
                 </span>
               </div>
               <div className="mt-4 space-y-2">
-                <BalanceRow label="Reserved" value={`${dotReserved} DOT`} />
-                <BalanceRow label="Total" value={`${dotTotal} DOT`} accent />
+                <BalanceRow label="Native Token" value="Ethereum" />
+                <BalanceRow label="Network" value="Arbitrum/Base Sepolia" accent />
               </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-fuchsia-500/30 via-pink-500/25 to-rose-500/25 p-5 shadow-[0_20px_45px_-35px_rgba(236,72,153,0.8)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.3em] text-white/70">Staked vDOT</p>
-                  <p className="mt-2 text-3xl font-semibold text-white">{vdotAvailable}</p>
+                  <p className="text-sm uppercase tracking-[0.3em] text-white/70">Staked vETH</p>
+                  <p className="mt-2 text-3xl font-semibold text-white">{vethDisplay}</p>
                 </div>
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-white">
-                  vDOT
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-xs font-semibold text-white">
+                  vETH
                 </span>
               </div>
               <div className="mt-4 space-y-2">
-                <BalanceRow label="Reserved" value={`${vdotReserved} vDOT`} />
-                <BalanceRow label="Total" value={`${vdotTotal} vDOT`} accent />
+                <BalanceRow label="Liquid Staking Token" value="Voucher ETH" />
+                <BalanceRow label="Exchange Rate" value="~1:1" accent />
               </div>
             </div>
           </div>

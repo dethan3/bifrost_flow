@@ -97,44 +97,16 @@ export const RedeemCard = () => {
       <form className="relative space-y-5 sm:space-y-6" onSubmit={handleSubmit}>
         <header className="flex flex-col gap-2">
           <p className="text-sm uppercase tracking-[0.35em] text-white/70">Redeem</p>
-          <h2 className="text-xl font-semibold text-white sm:text-2xl">Convert vDOT → DOT</h2>
+          <h2 className="text-xl font-semibold text-white sm:text-2xl">Convert vETH → ETH</h2>
           <p className="text-sm text-purple-100/90">
-            Exit your liquid staking position. Choose instant liquidity or wait for the standard unlock period.
+            Exit your liquid staking position and receive your ETH back.
           </p>
         </header>
-
-        <div className="flex flex-wrap gap-2">
-          {REDEEM_MODES.map((item) => {
-            const isActive = item.value === mode
-            return (
-              <button
-                key={item.value}
-                type="button"
-                onClick={() => handleModeSelect(item.value)}
-                className={`rounded-full border px-4 py-2 text-xs font-semibold transition ${
-                  isActive
-                    ? 'border-sky-400/80 bg-sky-500/30 text-white shadow-[0_20px_45px_-35px_rgba(14,116,144,0.8)]'
-                    : 'border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:text-white'
-                }`}
-              >
-                {item.label}
-              </button>
-            )
-          })}
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-xs text-purple-100/80 sm:px-5 sm:py-4">
-          {REDEEM_MODES.map((item) =>
-            item.value === mode ? (
-              <p key={item.value}>{item.description}</p>
-            ) : null
-          )}
-        </div>
 
         <div className="space-y-2">
           <div className="flex flex-col gap-1 text-xs text-purple-100/80 sm:flex-row sm:items-center sm:justify-between">
             <span>Amount</span>
-            <span className="text-purple-100/70 sm:text-right">Available: {vdotAvailableDisplay} vDOT</span>
+            <span className="text-purple-100/70 sm:text-right">Available: {vethAvailableDisplay} vETH</span>
           </div>
           <div className="group relative">
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/10 via-sky-500/10 to-white/10 opacity-0 transition group-hover:opacity-100" />
@@ -147,7 +119,7 @@ export const RedeemCard = () => {
                 inputMode="decimal"
               />
               <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs font-semibold text-white/70">
-                vDOT
+                vETH
               </span>
             </div>
           </div>
@@ -175,16 +147,16 @@ export const RedeemCard = () => {
         <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-purple-100/90 sm:px-5 sm:py-4">
           <div className="flex items-center justify-between">
             <span>Estimated Output</span>
-            <span className="font-semibold text-white">{estimatedDot} DOT</span>
+            <span className="font-semibold text-white">{estimatedEth} ETH</span>
           </div>
           <p className="mt-2 text-xs text-purple-100/70">
-            Fees may apply for instant redemption. Standard redemptions unlock after the staking unbonding period.
+            You will receive approximately 1 ETH for every 1 vETH redeemed.
           </p>
         </div>
 
         {(localError || error) && (
           <div className="rounded-2xl border border-rose-500/50 bg-rose-500/20 px-4 py-3 text-xs text-rose-100">
-            {localError ?? error}
+            {localError ?? (error?.message || 'Transaction failed')}
           </div>
         )}
 
@@ -198,6 +170,8 @@ export const RedeemCard = () => {
               <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/60 border-t-transparent" />
               {UI_MESSAGES.PROCESSING}
             </span>
+          ) : needsApprove ? (
+            'Approve vETH'
           ) : (
             UI_MESSAGES.REDEEM
           )}
