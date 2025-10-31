@@ -38,6 +38,10 @@ export function useRedeemEVM() {
     abi: erc20Abi,
     functionName: 'allowance',
     args: userAddress ? [userAddress, l2SlpxAddress] : undefined,
+    query: {
+      enabled: !!(userAddress && vethToken?.address),
+      staleTime: 30_000, // 30 秒缓存，减少查询频率
+    }
   })
 
   // 查询 vDOT 授权额度
@@ -46,6 +50,10 @@ export function useRedeemEVM() {
     abi: erc20Abi,
     functionName: 'allowance',
     args: userAddress ? [userAddress, l2SlpxAddress] : undefined,
+    query: {
+      enabled: !!(userAddress && vdotToken?.address),
+      staleTime: 30_000, // 30 秒缓存
+    }
   })
 
   const redeem = async ({ amount, asset }: RedeemEVMParams) => {
@@ -102,9 +110,19 @@ export function useRedeemEVM() {
     refetchVethAllowance,
     refetchVdotAllowance,
     needsApproval: (amount: string, asset: 'eth' | 'dot') => {
-      const amountWei = parseEther(amount)
-      const currentAllowance = asset === 'eth' ? vethAllowance : vdotAllowance
-      return !currentAllowance || currentAllowance < amountWei
+      // 安全地处理空字符串或无效输入
+      if (!amount || amount === '0' || isNaN(Number(amount))) {
+        return false
+      }
+      
+      try {
+        const amountWei = parseEther(amount)
+        const currentAllowance = asset === 'eth' ? vethAllowance : vdotAllowance
+        return !currentAllowance || currentAllowance < amountWei
+      } catch (error) {
+        console.error('Error parsing amount:', error)
+        return false
+      }
     },
   }
 }

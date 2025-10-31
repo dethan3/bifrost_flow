@@ -343,7 +343,7 @@ pnpm dev
 4. **Mint vETH** - 质押 ETH 获得 vETH
 5. **Redeem ETH** - 赎回 vETH 换回 ETH
 
-**详细测试指南**: 查看 [GETTING_STARTED_EVM.md](cci:7://file:///Users/ethan3/dethan3/bifrost_flow/GETTING_STARTED_EVM.md:0:0-0:0)
+**详细测试指南**: 查看 [GETTING_STARTED_EVM.md](#)
 
 ---
 

@@ -3,7 +3,7 @@
  * 使用 useMintEVM 和 useBalancesEVM
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -15,11 +15,18 @@ const QUICK_PRESETS = [25, 50, 75, 100] as const
 
 export const MintCard = () => {
   const { address: account } = useAccount()
-  const { nativeBalance } = useBalancesEVM()
-  const { mint, isLoading, error } = useMintEVM()
+  const { nativeBalance, refetchAll } = useBalancesEVM()
+  const { mint, isLoading, error, isConfirmed } = useMintEVM()
 
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
+
+  // 交易确认后自动刷新余额
+  useEffect(() => {
+    if (isConfirmed) {
+      void refetchAll()
+    }
+  }, [isConfirmed, refetchAll])
 
   // 格式化 ETH 余额（限制小数位）
   const ethAvailableDisplay = useMemo(() => {

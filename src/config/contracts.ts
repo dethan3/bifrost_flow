@@ -46,7 +46,7 @@ export const TOKENS_ARBITRUM_SEPOLIA: Token[] = [
   {
     name: 'Voucher ETH',
     symbol: 'vETH',
-    address: '0x6e0f9f2d25CC586965cBcF7017Ff89836ddeF9CC',
+    address: '0x0e011f93777b00f48b881b1cabc5f0a6395bdc02',
     decimals: 18,
     chainId: 421614,
   },
@@ -80,7 +80,7 @@ export const TOKENS_BASE_SEPOLIA: Token[] = [
   {
     name: 'Voucher ETH',
     symbol: 'vETH',
-    address: '0x6e0f9f2d25CC586965cBcF7017Ff89836ddeF9CC',
+    address: '0x0e011f93777b00f48b881b1cabc5f0a6395bdc02',
     decimals: 18,
     chainId: 84532,
   },

@@ -1,44 +1,8 @@
-import { useMemo } from 'react'
 import { ConnectWalletButton } from './ConnectWalletButton'
-import { useBifrost } from '../hooks/useBifrost'
-
-const getEndpointLabel = (endpoint: string | null): string | null => {
-  if (!endpoint) return null
-
-  try {
-    const url = new URL(endpoint)
-    return url.host
-  } catch (error) {
-    console.warn('Failed to parse endpoint URL', error)
-    return endpoint
-  }
-}
+import { useAccount } from 'wagmi'
 
 export const Header = () => {
-  const { isConnected, isConnecting, endpoint, error } = useBifrost()
-
-  const networkStatus = useMemo(() => {
-    if (isConnected) {
-      return {
-        label: 'Live on Bifrost',
-        className: 'bg-emerald-400 shadow-emerald-500/40',
-      }
-    }
-
-    if (isConnecting) {
-      return {
-        label: 'Syncing...',
-        className: 'bg-amber-400 shadow-amber-500/40 animate-pulse',
-      }
-    }
-
-    return {
-      label: 'Offline',
-      className: 'bg-rose-500 shadow-rose-500/40',
-    }
-  }, [isConnected, isConnecting])
-
-  const endpointLabel = useMemo(() => getEndpointLabel(endpoint), [endpoint])
+  const { isConnected } = useAccount()
 
   return (
     <header className="w-full rounded-3xl border border-white/10 bg-white/5 px-4 py-4 shadow-[0_25px_60px_-35px_rgba(76,29,149,0.8)] backdrop-blur-2xl sm:px-6 sm:py-5">
@@ -56,26 +20,17 @@ export const Header = () => {
         </div>
 
         <div className="flex w-full flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-end">
-          <div className="flex w-full items-center gap-3 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs text-purple-100 shadow-inner sm:w-auto sm:py-1.5">
-            <span
-              className={`inline-flex h-2.5 w-2.5 items-center justify-center rounded-full shadow-[0_0_10px] ${networkStatus.className}`}
-            />
-            <span className="font-semibold uppercase tracking-[0.25em] text-[0.6rem]">
-              {networkStatus.label}
-            </span>
-            {endpointLabel && (
-              <span className="text-[0.65rem] text-white/60 sm:inline">{endpointLabel}</span>
-            )}
-          </div>
+          {isConnected && (
+            <div className="flex w-full items-center gap-3 rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs text-purple-100 shadow-inner sm:w-auto sm:py-1.5">
+              <span className="inline-flex h-2.5 w-2.5 items-center justify-center rounded-full shadow-[0_0_10px] bg-emerald-400 shadow-emerald-500/40" />
+              <span className="font-semibold uppercase tracking-[0.25em] text-[0.6rem]">
+                EVM Connected
+              </span>
+            </div>
+          )}
           <ConnectWalletButton />
         </div>
       </div>
-
-      {error && (
-        <div className="mt-4 rounded-3xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-xs text-rose-100">
-          {error}
-        </div>
-      )}
     </header>
   )
 }

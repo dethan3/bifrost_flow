@@ -3,7 +3,7 @@
  * 使用 useRedeemEVM 和 useBalancesEVM
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -16,16 +16,28 @@ import { UI_MESSAGES } from '../utils'
 
 export const RedeemCard = () => {
   const { address: account } = useAccount()
-  const { vethBalance } = useBalancesEVM()
-  const { redeem, isLoading, error, needsApproval } = useRedeemEVM()
+  const { vethBalance, refetchAll } = useBalancesEVM()
+  const { redeem, isLoading, error, needsApproval, isConfirmed } = useRedeemEVM()
 
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
+
+  // 交易确认后自动刷新余额
+  useEffect(() => {
+    if (isConfirmed) {
+      void refetchAll()
+    }
+  }, [isConfirmed, refetchAll])
 
   const vethAvailableDisplay = useMemo(() => {
     const formatted = formatEther(vethBalance)
     return Number(formatted).toFixed(4)
   }, [vethBalance])
+
+  // 缓存 needsApproval 的结果，避免每次渲染都调用
+  const needsApprove = useMemo(() => {
+    return needsApproval(amount || '0', 'eth')
+  }, [amount, needsApproval])
 
   const handlePreset = (percentage: number) => {
     if (!account) {
@@ -88,7 +100,6 @@ export const RedeemCard = () => {
   }
 
   const estimatedEth = amount && Number(amount) > 0 ? amount : '0'
-  const needsApprove = needsApproval(amount || '0', 'eth')
   const disableAction = !account || isLoading || !amount
 
   return (
