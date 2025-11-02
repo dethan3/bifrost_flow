@@ -54,7 +54,7 @@ export const StakingPanel = () => {
         </div>
 
         {/* 内容区域 */}
-        <div className="p-5 sm:p-6">
+        <div className="p-6 sm:p-9">
           {activeTab === 'mint' ? <MintForm /> : <RedeemForm />}
         </div>
       </div>

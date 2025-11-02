@@ -2,6 +2,7 @@ import { Header } from './components/Header'
 import { BalanceCard } from './components/BalanceCard'
 import { StakingPanel } from './components/StakingPanel'
 import { EarningsCard } from './components/EarningsCard'
+import { InfoCard } from './components/InfoCard'
 import { TransactionToast } from './components/TransactionToast'
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           {/* 左侧：质押操作面板 */}
           <div className="space-y-6">
             <StakingPanel />
+            <InfoCard />
           </div>
 
           {/* 右侧：信息卡片 */}

@@ -26,10 +26,40 @@ export function useBalancesEVM() {
     }
   })
 
-  // 获取 ERC20 代币地址
-  const dotToken = tokens.find(t => t.symbol === 'DOT')
+  // 获取 ERC20 代币地址（只查询实际存在的代币）
   const vethToken = tokens.find(t => t.symbol === 'vETH')
+  const dotToken = tokens.find(t => t.symbol === 'DOT')
   const vdotToken = tokens.find(t => t.symbol === 'vDOT')
+
+  // 构建查询合约数组（只包含存在的代币）
+  const contractQueries = []
+  
+  if (vethToken?.address) {
+    contractQueries.push({
+      address: vethToken.address as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf' as const,
+      args: address ? [address] : undefined,
+    })
+  }
+  
+  if (dotToken?.address) {
+    contractQueries.push({
+      address: dotToken.address as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf' as const,
+      args: address ? [address] : undefined,
+    })
+  }
+  
+  if (vdotToken?.address) {
+    contractQueries.push({
+      address: vdotToken.address as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf' as const,
+      args: address ? [address] : undefined,
+    })
+  }
 
   // 查询 ERC20 代币余额
   const { 
@@ -37,36 +67,36 @@ export function useBalancesEVM() {
     isLoading: isTokenBalancesLoading, 
     refetch: refetchTokenBalances 
   } = useReadContracts({
-    contracts: [
-      {
-        address: dotToken?.address as Address,
-        abi: erc20Abi,
-        functionName: 'balanceOf',
-        args: address ? [address] : undefined,
-      },
-      {
-        address: vethToken?.address as Address,
-        abi: erc20Abi,
-        functionName: 'balanceOf',
-        args: address ? [address] : undefined,
-      },
-      {
-        address: vdotToken?.address as Address,
-        abi: erc20Abi,
-        functionName: 'balanceOf',
-        args: address ? [address] : undefined,
-      },
-    ],
+    contracts: contractQueries,
     query: {
-      enabled: !!address,
+      enabled: !!address && contractQueries.length > 0,
       staleTime: 10_000, // 10 秒内认为数据是新鲜的
     }
   })
 
-  // 提取余额数据（安全地处理可能的 undefined）
-  const dotBalance = (tokenBalances?.[0]?.status === 'success' ? tokenBalances[0].result as bigint : undefined) || BigInt(0)
-  const vethBalance = (tokenBalances?.[1]?.status === 'success' ? tokenBalances[1].result as bigint : undefined) || BigInt(0)
-  const vdotBalance = (tokenBalances?.[2]?.status === 'success' ? tokenBalances[2].result as bigint : undefined) || BigInt(0)
+  // 提取余额数据（根据实际查询的代币顺序）
+  let vethBalance = BigInt(0)
+  let dotBalance = BigInt(0)
+  let vdotBalance = BigInt(0)
+  
+  let resultIndex = 0
+  if (vethToken?.address && tokenBalances?.[resultIndex]?.status === 'success') {
+    vethBalance = tokenBalances[resultIndex].result as bigint
+    resultIndex++
+  } else if (vethToken?.address) {
+    resultIndex++
+  }
+  
+  if (dotToken?.address && tokenBalances?.[resultIndex]?.status === 'success') {
+    dotBalance = tokenBalances[resultIndex].result as bigint
+    resultIndex++
+  } else if (dotToken?.address) {
+    resultIndex++
+  }
+  
+  if (vdotToken?.address && tokenBalances?.[resultIndex]?.status === 'success') {
+    vdotBalance = tokenBalances[resultIndex].result as bigint
+  }
 
   return {
     // 原生 ETH
