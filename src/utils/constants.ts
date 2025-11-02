@@ -48,7 +48,7 @@ export const UI_MESSAGES = {
   NO_WALLET: 'No Polkadot Extension Found',
   
   // Actions
-  MINT: 'Mint vDOT',
+  MINT: 'Mint',
   REDEEM: 'Redeem',
   CONFIRM: 'Confirm',
   CANCEL: 'Cancel',

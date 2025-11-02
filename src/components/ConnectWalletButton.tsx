@@ -39,18 +39,13 @@ export const ConnectWalletButton = () => {
                   <button
                     type="button"
                     onClick={openConnectModal}
-                    className="group flex w-full items-center gap-3 rounded-full border border-white/20 bg-gradient-to-r from-fuchsia-500/80 via-purple-500/80 to-indigo-500/80 px-4 py-2 text-sm font-semibold text-white shadow-[0_15px_35px_-15px_rgba(139,92,246,0.8)] backdrop-blur transition hover:scale-[1.02] hover:shadow-[0_20px_45px_-15px_rgba(236,72,153,0.9)] focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-900 sm:w-auto sm:px-5"
+                    className="group flex w-full items-center justify-center gap-3 rounded-full border border-white/20 bg-gradient-to-r from-fuchsia-500/80 via-purple-500/80 to-indigo-500/80 px-6 py-3 text-base font-semibold text-white shadow-[0_15px_35px_-15px_rgba(139,92,246,0.8)] backdrop-blur transition hover:scale-[1.02] hover:shadow-[0_20px_45px_-15px_rgba(236,72,153,0.9)] focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-900 sm:w-auto"
                   >
-                    <span className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10">
-                      <span className="h-2.5 w-2.5 animate-ping rounded-full bg-white/80" />
+                    <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10">
+                      <span className="h-2 w-2 animate-ping rounded-full bg-white/80" />
                       <span className="absolute inset-0 rounded-full bg-gradient-to-br from-white/10 via-transparent to-white/20 opacity-0 transition group-hover:opacity-100" />
                     </span>
-                    <span className="flex flex-col text-left">
-                      <span className="text-[0.95rem] leading-tight">Connect Wallet</span>
-                      <span className="text-[0.65rem] font-normal text-white/70">
-                        MetaMask, WalletConnect
-                      </span>
-                    </span>
+                    <span>Connect Wallet</span>
                   </button>
                 )
               }

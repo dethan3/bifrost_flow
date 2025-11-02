@@ -81,16 +81,10 @@ export function useBalancesEVM() {
     isTokenBalancesLoading,
     refetchTokenBalances,
 
-    // 刷新所有余额
-    refetchAll: async () => {
-      try {
-        await Promise.all([
-          refetchNativeBalance(),
-          refetchTokenBalances(),
-        ])
-      } catch (error) {
-        console.error('Error refetching balances:', error)
-      }
+    // 刷新所有余额（简单实现，不使用 useCallback 避免复杂依赖）
+    refetchAll: () => {
+      refetchNativeBalance()
+      refetchTokenBalances()
     },
 
     // 是否正在加载

@@ -1,10 +1,12 @@
+/**
+ * 简化测试版本 - 用于排查卡顿问题
+ * 逐步启用组件
+ */
+
 import { Header } from './components/Header'
-import { BalanceCard } from './components/BalanceCard'
-import { StakingPanel } from './components/StakingPanel'
-import { EarningsCard } from './components/EarningsCard'
 import { TransactionToast } from './components/TransactionToast'
 
-function App() {
+function AppTest() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
       {/* 背景效果 */}
@@ -18,24 +20,16 @@ function App() {
         {/* 头部 */}
         <Header />
 
-        {/* 主内容区：两栏布局 */}
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_400px] xl:gap-8">
-          {/* 左侧：质押操作面板 */}
-          <div className="space-y-6">
-            <StakingPanel />
-          </div>
-
-          {/* 右侧：信息卡片 */}
-          <div className="space-y-6">
-            <BalanceCard />
-            <EarningsCard />
-          </div>
+        {/* 测试内容 */}
+        <div className="mt-8 p-6 rounded-3xl border border-white/10 bg-white/5">
+          <h2 className="text-2xl font-bold text-white mb-4">🧪 Test Mode</h2>
+          <p className="text-purple-100">
+            如果你能看到这个页面且不卡顿，说明基础组件没问题。
+          </p>
+          <p className="text-purple-100 mt-2">
+            现在开始逐步启用其他组件...
+          </p>
         </div>
-
-        {/* 页脚 */}
-        <footer className="mt-8 text-center text-xs text-white/50 sm:mt-12 sm:text-sm">
-          <p>Liquid staking gateway for the omnichain world</p>
-        </footer>
       </main>
 
       <TransactionToast />
@@ -43,4 +37,4 @@ function App() {
   )
 }
 
-export default App
+export default AppTest
