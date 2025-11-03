@@ -1,7 +1,3 @@
-/**
- * InfoCard - 显示液态质押相关的关键信息和特性
- */
-
 export const InfoCard = () => {
   return (
     <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 sm:p-6">
@@ -16,7 +12,7 @@ export const InfoCard = () => {
         </header>
 
         <div className="space-y-3">
-          {/* 特性 1 */}
+          {/* Feature 1 */}
           <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-purple-500/5 to-transparent p-4 transition hover:border-purple-400/30">
             <div className="flex gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-purple-500/20 text-xl">
@@ -31,7 +27,7 @@ export const InfoCard = () => {
             </div>
           </div>
 
-          {/* 特性 2 */}
+          {/* Feature 2 */}
           <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/5 to-transparent p-4 transition hover:border-emerald-400/30">
             <div className="flex gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-500/20 text-xl">
@@ -46,7 +42,7 @@ export const InfoCard = () => {
             </div>
           </div>
 
-          {/* 特性 3 */}
+          {/* Feature 3 */}
           <div className="group rounded-xl border border-white/10 bg-gradient-to-br from-sky-500/5 to-transparent p-4 transition hover:border-sky-400/30">
             <div className="flex gap-3">
               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-sky-500/20 text-xl">
@@ -62,7 +58,7 @@ export const InfoCard = () => {
           </div>
         </div>
 
-        {/* 底部提示 */}
+        {/* Footer tip */}
         <div className="rounded-lg border border-indigo-400/20 bg-indigo-500/5 px-4 py-3">
           <p className="text-xs text-indigo-200/80">
             <span className="font-semibold">💡 Pro Tip:</span> You can redeem your vETH back to ETH anytime. The exchange rate reflects your accumulated staking rewards.

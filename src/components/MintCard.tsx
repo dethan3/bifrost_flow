@@ -1,8 +1,3 @@
-/**
- * EVM 版本的 MintCard
- * 使用 useMintEVM 和 useBalancesEVM
- */
-
 import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
@@ -21,14 +16,14 @@ export const MintCard = () => {
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  // 交易确认后自动刷新余额
+  // Automatically refresh balances after the transaction confirms
   useEffect(() => {
     if (isConfirmed) {
       void refetchAll()
     }
   }, [isConfirmed, refetchAll])
 
-  // 格式化 ETH 余额（限制小数位）
+  // Format the ETH balance with a capped decimal precision
   const ethAvailableDisplay = useMemo(() => {
     const formatted = formatEther(nativeBalance)
     return Number(formatted).toFixed(4)
@@ -83,8 +78,7 @@ export const MintCard = () => {
 
       setLocalError(null)
       await mint({ amount, asset: 'eth' })
-      
-      // 成功后清空输入
+      // Clear the input once the transaction succeeds
       if (!isLoading) {
         setAmount('')
       }

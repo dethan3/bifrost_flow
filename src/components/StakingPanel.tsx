@@ -1,7 +1,3 @@
-/**
- * StakingPanel - 整合 Mint 和 Redeem 为 Tabs 界面
- */
-
 import { useState } from 'react'
 import { MintForm } from './MintForm'
 import { RedeemForm } from './RedeemForm'
@@ -13,11 +9,11 @@ export const StakingPanel = () => {
 
   return (
     <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_25px_65px_-45px_rgba(168,85,247,0.7)]">
-      {/* 背景渐变 */}
+      {/* Background gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(236,72,153,0.12),_transparent_60%)]" />
       
       <div className="relative">
-        {/* Tabs 头部 */}
+        {/* Tabs header */}
         <div className="flex border-b border-white/10">
           <button
             type="button"
@@ -53,7 +49,7 @@ export const StakingPanel = () => {
           </button>
         </div>
 
-        {/* 内容区域 */}
+        {/* Content area */}
         <div className="p-6 sm:p-9">
           {activeTab === 'mint' ? <MintForm /> : <RedeemForm />}
         </div>

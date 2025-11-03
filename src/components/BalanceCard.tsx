@@ -1,8 +1,3 @@
-/**
- * EVM 版本的 BalanceCard - 紧凑三卡片布局
- * 使用 useBalancesEVM
- */
-
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -14,27 +9,27 @@ export const BalanceCard = () => {
   const { address: account } = useAccount()
   const { nativeBalance, vethBalance, isLoading, refetchAll } = useBalancesEVM()
 
-  // 格式化 ETH 余额
+  // Format the native ETH balance
   const ethDisplay = useMemo(() => {
     const formatted = formatEther(nativeBalance)
     return Number(formatted).toFixed(4)
   }, [nativeBalance])
 
-  // 格式化 vETH 余额
+  // Format the vETH balance
   const vethDisplay = useMemo(() => {
     const formatted = formatEther(vethBalance)
     return Number(formatted).toFixed(4)
   }, [vethBalance])
 
-  // 简单估算收益（假设持有 30 天）
+  // Estimate rewards with a 30-day holding assumption
   const estimatedRewards = useMemo(() => {
     const vethAmount = Number(formatEther(vethBalance))
     const dailyRate = MOCK_APY / 100 / 365
-    const estimatedDays = 30 // 假设持有 30 天
+    const estimatedDays = 30 // Assume a 30-day holding period
     return (vethAmount * dailyRate * estimatedDays).toFixed(4)
   }, [vethBalance])
 
-  // 总价值 USD（假设 ETH = $2000）
+  // Total USD value (assuming ETH = $2000)
   const totalValueUSD = useMemo(() => {
     const ethAmount = Number(ethDisplay)
     const vethAmount = Number(vethDisplay)
@@ -60,7 +55,7 @@ export const BalanceCard = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.15),_transparent_55%)]" />
       
       <div className="relative space-y-5">
-        {/* 头部：总资产 */}
+        {/* Header: portfolio totals */}
         <header className="flex items-center justify-between">
           <div>
             <h2 className="text-lg font-semibold text-white sm:text-xl">Portfolio Overview</h2>
@@ -80,9 +75,9 @@ export const BalanceCard = () => {
           </button>
         </header>
 
-        {/* 三圆形卡片 */}
+        {/* Three circular cards */}
         <div className="grid grid-cols-3 gap-3 sm:gap-4">
-          {/* ETH 卡片 */}
+          {/* ETH card */}
           <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 p-4 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-indigo-500/30 border border-indigo-400/30">
               <span className="text-xl">💎</span>
@@ -92,7 +87,7 @@ export const BalanceCard = () => {
             <p className="mt-1 text-[0.65rem] text-purple-200/60">≈ ${(Number(ethDisplay) * 2000).toFixed(2)}</p>
           </div>
 
-          {/* vETH 卡片 */}
+          {/* vETH card */}
           <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-fuchsia-500/20 to-pink-500/20 p-4 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-fuchsia-500/30 border border-fuchsia-400/30">
               <span className="text-xl">🔮</span>
@@ -102,7 +97,7 @@ export const BalanceCard = () => {
             <p className="mt-1 text-[0.65rem] text-purple-200/60">≈ ${(Number(vethDisplay) * 2000).toFixed(2)}</p>
           </div>
 
-          {/* 收益卡片 */}
+          {/* Rewards card */}
           <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 p-4 text-center">
             <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/30 border border-emerald-400/30">
               <span className="text-xl">💰</span>

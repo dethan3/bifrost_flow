@@ -12,7 +12,7 @@ export const ConnectWalletButton = () => {
         authenticationStatus,
         mounted,
       }) => {
-        // 处理 SSR 和挂载状态
+        // Handle SSR and mounting states
         const ready = mounted && authenticationStatus !== 'loading'
         const connected = ready && account && chain && (!authenticationStatus || authenticationStatus === 'authenticated')
 

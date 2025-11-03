@@ -9,7 +9,7 @@ import App from './App.tsx'
 import './index.css'
 import '@rainbow-me/rainbowkit/styles.css'
 
-// 创建 React Query client
+// Create the React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

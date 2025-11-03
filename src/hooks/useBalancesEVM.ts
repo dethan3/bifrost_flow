@@ -1,6 +1,6 @@
 /**
  * useBalancesEVM Hook
- * 用于查询 EVM 链上的余额（原生代币和 ERC20）
+ * Retrieves balances on EVM chains (native tokens and ERC20).
  */
 
 import { useBalance, useReadContracts, useAccount, useChainId } from 'wagmi'
@@ -14,7 +14,7 @@ export function useBalancesEVM() {
   const chainId = useChainId()
   const tokens = useMemo(() => getTokensByChainId(chainId), [chainId])
 
-  // 查询原生 ETH 余额
+  // Query native ETH balance
   const { 
     data: nativeBalance, 
     isLoading: isNativeBalanceLoading, 
@@ -23,16 +23,16 @@ export function useBalancesEVM() {
     address,
     query: {
       enabled: !!address,
-      staleTime: 10_000, // 10 秒内认为数据是新鲜的
+      staleTime: 10_000, // Treat data as fresh for 10 seconds
     }
   })
 
-  // 使用 useMemo 查找代币，避免每次渲染都创建新对象引用
+  // Use useMemo to avoid recreating token references on each render
   const vethToken = useMemo(() => tokens.find(t => t.symbol === 'vETH'), [tokens])
   const dotToken = useMemo(() => tokens.find(t => t.symbol === 'DOT'), [tokens])
   const vdotToken = useMemo(() => tokens.find(t => t.symbol === 'vDOT'), [tokens])
 
-  // 使用 useMemo 构建查询合约数组，避免每次渲染都重新创建
+  // Build the contract query array with useMemo to avoid regenerating it
   const contractQueries = useMemo(() => {
     const queries = []
     
@@ -66,7 +66,7 @@ export function useBalancesEVM() {
     return queries
   }, [vethToken, dotToken, vdotToken, address])
 
-  // 查询 ERC20 代币余额
+  // Query ERC20 token balances
   const { 
     data: tokenBalances, 
     isLoading: isTokenBalancesLoading, 
@@ -75,11 +75,11 @@ export function useBalancesEVM() {
     contracts: contractQueries,
     query: {
       enabled: !!address && contractQueries.length > 0,
-      staleTime: 10_000, // 10 秒内认为数据是新鲜的
+      staleTime: 10_000, // Treat data as fresh for 10 seconds
     }
   })
 
-  // 提取余额数据（根据实际查询的代币顺序）
+  // Extract balances in the same order as the contract queries
   let vethBalance = BigInt(0)
   let dotBalance = BigInt(0)
   let vdotBalance = BigInt(0)
@@ -103,29 +103,29 @@ export function useBalancesEVM() {
     vdotBalance = tokenBalances[resultIndex].result as bigint
   }
 
-  // 使用 useCallback 包装 refetchAll，避免无限循环
+  // Wrap refetchAll with useCallback to avoid infinite loops
   const refetchAll = useCallback(() => {
     refetchNativeBalance()
     refetchTokenBalances()
   }, [refetchNativeBalance, refetchTokenBalances])
 
   return {
-    // 原生 ETH
+    // Native ETH
     nativeBalance: nativeBalance?.value || BigInt(0),
     isNativeBalanceLoading,
     refetchNativeBalance,
 
-    // ERC20 代币
+    // ERC20 tokens
     dotBalance,
     vethBalance,
     vdotBalance,
     isTokenBalancesLoading,
     refetchTokenBalances,
 
-    // 刷新所有余额
+    // Refresh all balances
     refetchAll,
 
-    // 是否正在加载
+    // Combined loading state
     isLoading: isNativeBalanceLoading || isTokenBalancesLoading,
   }
 }

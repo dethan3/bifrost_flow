@@ -1,8 +1,3 @@
-/**
- * EarningsCard - 收益追踪卡片
- * 显示核心的收益统计信息
- */
-
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -18,15 +13,15 @@ export const EarningsCard = () => {
     return Number(formatEther(vethBalance))
   }, [vethBalance])
 
-  // 当用户余额太小时，使用示例数据（1 ETH）
+  // Fall back to the 1 ETH example when the balance is minimal
   const displayAmount = useMemo(() => {
     return vethAmount < 0.01 ? 1.0 : vethAmount
   }, [vethAmount])
 
-  // 判断是否使用示例数据
+  // Flag whether we're showing example data
   const isExampleData = vethAmount < 0.01
 
-  // 计算总收益（假设持有30天）
+  // Calculate total earnings assuming a 30-day holding period
   const totalEarnings = useMemo(() => {
     const dailyRate = (MOCK_APY / 100) / 365
     return (displayAmount * dailyRate * 30).toFixed(4)
@@ -49,7 +44,7 @@ export const EarningsCard = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_rgba(16,185,129,0.12),_transparent_60%)]" />
       
       <div className="relative space-y-4">
-        {/* 头部 */}
+        {/* Header */}
         <header>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-semibold text-white">Rewards Overview</h2>
@@ -61,9 +56,9 @@ export const EarningsCard = () => {
           </div>
         </header>
 
-        {/* 统计数据 - 单行紧凑布局 */}
+        {/* Metrics row with a compact layout */}
         <div className="grid grid-cols-3 gap-3">
-          {/* 30天预估收益 */}
+          {/* 30-day estimated rewards */}
           <div className="rounded-xl border border-white/10 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-3 text-center">
             <div className="mb-1.5 text-lg">💰</div>
             <p className="text-[0.6rem] uppercase tracking-wider text-white/50">30-Day</p>
@@ -79,7 +74,7 @@ export const EarningsCard = () => {
             <p className="text-[0.55rem] text-indigo-200/50">Annual</p>
           </div>
 
-          {/* vETH 余额 */}
+          {/* vETH balance */}
           <div className="rounded-xl border border-white/10 bg-gradient-to-br from-fuchsia-500/10 to-pink-500/10 p-3 text-center">
             <div className="mb-1.5 text-lg">🔮</div>
             <p className="text-[0.6rem] uppercase tracking-wider text-white/50">Balance</p>
@@ -88,7 +83,7 @@ export const EarningsCard = () => {
           </div>
         </div>
 
-        {/* 说明文本 */}
+        {/* Supporting text */}
         <p className="text-[0.7rem] text-purple-100/50">
           {isExampleData ? (
             <>

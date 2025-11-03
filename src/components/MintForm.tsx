@@ -1,7 +1,3 @@
-/**
- * MintForm - Mint 表单组件（从 MintCard 提取）
- */
-
 import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
@@ -21,7 +17,7 @@ export const MintForm = () => {
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  // 交易确认后自动刷新余额
+  // Automatically refresh balances after confirmation
   useEffect(() => {
     if (isConfirmed) {
       setAmount('')
@@ -29,7 +25,7 @@ export const MintForm = () => {
     }
   }, [isConfirmed, refetchAll])
 
-  // 格式化 ETH 余额（限制小数位）
+  // Format the ETH balance with a decimal cap
   const ethAvailableDisplay = useMemo(() => {
     const formatted = formatEther(nativeBalance)
     return Number(formatted).toFixed(4)
@@ -144,7 +140,7 @@ export const MintForm = () => {
         </div>
       </div>
 
-      {/* 新增：APY 和汇率信息框 */}
+      {/* APY and exchange-rate summary */}
       <div className="rounded-2xl border border-purple-400/20 bg-gradient-to-br from-purple-500/10 to-indigo-500/10 px-4 py-3 text-sm backdrop-blur-sm sm:px-5 sm:py-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">

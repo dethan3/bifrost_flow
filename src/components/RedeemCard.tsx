@@ -1,6 +1,6 @@
 /**
- * EVM 版本的 RedeemCard
- * 使用 useRedeemEVM 和 useBalancesEVM
+ * EVM RedeemCard powered by useRedeemEVM and useBalancesEVM.
+ * Currently supports only the instant redeem flow.
  */
 
 import { useMemo, useState, useEffect } from 'react'
@@ -11,9 +11,6 @@ import { useRedeemEVM } from '../hooks/useRedeemEVM'
 import { useBalancesEVM } from '../hooks/useBalancesEVM'
 import { UI_MESSAGES } from '../utils'
 
-// EVM 上只支持即时赎回
-// 未来可以根据实际协议支持情况添加更多模式
-
 export const RedeemCard = () => {
   const { address: account } = useAccount()
   const { vethBalance, refetchAll } = useBalancesEVM()
@@ -22,7 +19,7 @@ export const RedeemCard = () => {
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  // 交易确认后自动刷新余额
+  // Refresh balances automatically after the transaction confirms
   useEffect(() => {
     if (isConfirmed) {
       void refetchAll()
@@ -34,7 +31,7 @@ export const RedeemCard = () => {
     return Number(formatted).toFixed(4)
   }, [vethBalance])
 
-  // 缓存 needsApproval 的结果，避免每次渲染都调用
+  // Memoize the approval check to avoid recomputing on every render
   const needsApprove = useMemo(() => {
     return needsApproval(amount || '0', 'eth')
   }, [amount, needsApproval])

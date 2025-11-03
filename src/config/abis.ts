@@ -1,6 +1,5 @@
 /**
- * L2Slpx 合约 ABI
- * 从 bifrost-dev-kit 复制
+ * L2Slpx contract ABI copied from bifrost-dev-kit.
  */
 
 export const l2SlpxAbi = [
@@ -216,7 +215,7 @@ export const l2SlpxAbi = [
 ] as const
 
 /**
- * ERC20 标准 ABI（用于查询余额和授权）
+ * ERC20 standard ABI (used for balance and allowance checks).
  */
 export const erc20Abi = [
   {

@@ -1,7 +1,3 @@
-/**
- * RedeemForm - Redeem 表单组件（从 RedeemCard 提取）
- */
-
 import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
@@ -20,7 +16,7 @@ export const RedeemForm = () => {
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
-  // 交易确认后自动刷新余额
+  // Refresh balances automatically after confirmation
   useEffect(() => {
     if (isConfirmed) {
       setAmount('')
@@ -33,7 +29,7 @@ export const RedeemForm = () => {
     return Number(formatted).toFixed(4)
   }, [vethBalance])
 
-  // 使用 useMemo 缓存授权检查结果
+  // Memoize the approval check result
   const needsApprove = useMemo(() => {
     return needsApproval(amount || '0', 'eth')
   }, [amount, needsApproval])
@@ -147,7 +143,7 @@ export const RedeemForm = () => {
         </div>
       </div>
 
-      {/* 新增：汇率信息框 */}
+      {/* Exchange-rate summary */}
       <div className="rounded-2xl border border-sky-400/20 bg-gradient-to-br from-sky-500/10 to-blue-500/10 px-4 py-3 text-sm backdrop-blur-sm sm:px-5 sm:py-4">
         <div className="space-y-2">
           <div className="flex items-center justify-between">
