@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react'
-import type { DispatchError } from '@polkadot/types/interfaces'
 import { useBifrost } from './useBifrost'
 import { useWallet } from './useWallet'
 import { useAppStore } from '../store'
 import type { MintParams } from '../types'
 
-const decodeDispatchError = (dispatchError: DispatchError, api: ReturnType<typeof useBifrost>['api']): string => {
+const decodeDispatchError = (dispatchError: any, api: ReturnType<typeof useBifrost>['api']): string => {
   if (!dispatchError) {
     return 'Unknown error'
   }
@@ -50,12 +49,14 @@ export const useMint = () => {
 
     try {
       const signer = await getSigner(account.address)
+      const apiOk = api as NonNullable<typeof api>
 
       const tokenParam = { Token: tokenSymbol }
-      const extrinsic = (api.tx as unknown as { vtokenMinting?: { mint?: (token: unknown, value: string) => { signAndSend: typeof api.tx.balances.transfer['signAndSend'] } } }).vtokenMinting?.mint?.(
-        tokenParam,
-        amount
-      )
+      const extrinsic = (apiOk.tx as unknown as {
+        vtokenMinting?: {
+          mint?: (token: unknown, value: string) => ReturnType<typeof apiOk.tx.balances.transfer>
+        }
+      }).vtokenMinting?.mint?.(tokenParam, amount)
 
       if (!extrinsic) {
         throw new Error('Mint extrinsic not available on current network')
@@ -70,7 +71,7 @@ export const useMint = () => {
         }
 
         extrinsic
-          .signAndSend(account.address, { signer }, (result) => {
+          .signAndSend(account.address, { signer }, (result: any) => {
             const txHash = result.txHash?.toHex()
 
             if (result.dispatchError) {
@@ -92,10 +93,10 @@ export const useMint = () => {
               resolve()
             }
           })
-          .then((unsub) => {
+          .then((unsub: any) => {
             unsubscribe = unsub
           })
-          .catch((signError) => {
+          .catch((signError: any) => {
             cleanup()
             reject(signError)
           })
@@ -116,3 +117,4 @@ export const useMint = () => {
     error,
   }
 }
+

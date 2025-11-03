@@ -26,13 +26,8 @@ export const wagmiConfig = getDefaultConfig({
   chains,
   transports,
   ssr: false, // Vite does not require SSR
-  
-  // Disable persistence and auto-reconnect to prevent state conflicts after a refresh
-  autoConnect: false,
-  
-  // @ts-expect-error - using internal configuration to disable persistence
-  storage: null, // Disable persistent storage
 })
 
 export const supportedChains = chains
 export const defaultChain = arbitrumSepolia
+

@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react'
-import type { DispatchError } from '@polkadot/types/interfaces'
 import { useBifrost } from './useBifrost'
 import { useWallet } from './useWallet'
 import { useAppStore } from '../store'
 import type { RedeemParams } from '../types'
 
-const decodeDispatchError = (dispatchError: DispatchError, api: ReturnType<typeof useBifrost>['api']): string => {
+const decodeDispatchError = (dispatchError: any, api: ReturnType<typeof useBifrost>['api']): string => {
   if (!dispatchError) {
     return 'Unknown error'
   }
@@ -53,10 +52,11 @@ export const useRedeem = () => {
       const signer = await getSigner(account.address)
       const tokenParam = { Token: 'DOT' }
 
-      const vtokenMinting = (api.tx as unknown as {
+      const apiOk = api as NonNullable<typeof api>
+      const vtokenMinting = (apiOk.tx as unknown as {
         vtokenMinting?: {
-          redeem?: (token: unknown, value: string) => { signAndSend: typeof api.tx.balances.transfer['signAndSend'] }
-          redeemInstant?: (token: unknown, value: string) => { signAndSend: typeof api.tx.balances.transfer['signAndSend'] }
+          redeem?: (token: unknown, value: string) => ReturnType<typeof apiOk.tx.balances.transfer>
+          redeemInstant?: (token: unknown, value: string) => ReturnType<typeof apiOk.tx.balances.transfer>
         }
       }).vtokenMinting
 
@@ -75,7 +75,7 @@ export const useRedeem = () => {
         }
 
         extrinsic
-          .signAndSend(account.address, { signer }, (result) => {
+          .signAndSend(account.address, { signer }, (result: any) => {
             const txHash = result.txHash?.toHex()
 
             if (result.dispatchError) {
@@ -97,10 +97,10 @@ export const useRedeem = () => {
               resolve()
             }
           })
-          .then((unsub) => {
+          .then((unsub: any) => {
             unsubscribe = unsub
           })
-          .catch((signError) => {
+          .catch((signError: any) => {
             cleanup()
             reject(signError)
           })
@@ -121,3 +121,4 @@ export const useRedeem = () => {
     error,
   }
 }
+
