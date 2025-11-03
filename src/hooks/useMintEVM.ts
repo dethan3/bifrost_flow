@@ -4,6 +4,7 @@
  */
 
 import { useWriteContract, useWaitForTransactionReceipt, useChainId } from 'wagmi'
+import { useCallback } from 'react'
 import { getTestnetMintParams } from 'slpx-sdk'
 import type { ValidTestnetChainInput } from 'slpx-sdk'
 
@@ -21,7 +22,7 @@ export function useMintEVM() {
     hash,
   })
 
-  const mint = async ({ amount, asset }: MintEVMParams) => {
+  const mint = useCallback(async ({ amount, asset }: MintEVMParams) => {
     try {
       // 使用 slpx-sdk 生成交易参数
       const params = getTestnetMintParams(
@@ -37,7 +38,7 @@ export function useMintEVM() {
       console.error('Mint error:', err)
       throw err
     }
-  }
+  }, [chainId, writeContract])
 
   return {
     mint,

@@ -2,7 +2,7 @@
  * MintForm - Mint 表单组件（从 MintCard 提取）
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -20,6 +20,14 @@ export const MintForm = () => {
 
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
+
+  // 交易确认后自动刷新余额
+  useEffect(() => {
+    if (isConfirmed) {
+      setAmount('')
+      void refetchAll()
+    }
+  }, [isConfirmed, refetchAll])
 
   // 格式化 ETH 余额（限制小数位）
   const ethAvailableDisplay = useMemo(() => {
@@ -76,14 +84,6 @@ export const MintForm = () => {
 
       setLocalError(null)
       await mint({ amount, asset: 'eth' })
-      
-      // 成功后清空输入并刷新
-      setTimeout(() => {
-        if (isConfirmed) {
-          setAmount('')
-          refetchAll()
-        }
-      }, 1000)
     } catch (submissionError) {
       const message =
         submissionError instanceof Error ? submissionError.message : 'Failed to submit mint transaction'

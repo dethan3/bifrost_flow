@@ -125,7 +125,8 @@ export const useBalance = () => {
     } else {
       setBalances(null)
     }
-  }, [account, api, isConnected, fetchBalances, setBalances])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, api, isConnected, fetchBalances])
 
   // Subscribe to balance changes
   useEffect(() => {

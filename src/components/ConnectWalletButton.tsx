@@ -1,8 +1,3 @@
-/**
- * EVM 版本的钱包连接按钮
- * 使用 RainbowKit 的 ConnectButton 并自定义样式
- */
-
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 export const ConnectWalletButton = () => {

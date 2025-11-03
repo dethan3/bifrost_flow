@@ -2,7 +2,7 @@
  * RedeemForm - Redeem 表单组件（从 RedeemCard 提取）
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { useAccount } from 'wagmi'
 import { formatEther } from 'viem'
@@ -20,13 +20,23 @@ export const RedeemForm = () => {
   const [amount, setAmount] = useState('')
   const [localError, setLocalError] = useState<string | null>(null)
 
+  // 交易确认后自动刷新余额
+  useEffect(() => {
+    if (isConfirmed) {
+      setAmount('')
+      void refetchAll()
+    }
+  }, [isConfirmed, refetchAll])
+
   const vethAvailableDisplay = useMemo(() => {
     const formatted = formatEther(vethBalance)
     return Number(formatted).toFixed(4)
   }, [vethBalance])
 
-  // 直接计算是否需要授权，不使用 useMemo（避免依赖函数导致重新渲染）
-  const needsApprove = needsApproval(amount || '0', 'eth')
+  // 使用 useMemo 缓存授权检查结果
+  const needsApprove = useMemo(() => {
+    return needsApproval(amount || '0', 'eth')
+  }, [amount, needsApproval])
 
   const handlePreset = (percentage: number) => {
     if (!account) {
@@ -77,14 +87,6 @@ export const RedeemForm = () => {
 
       setLocalError(null)
       await redeem({ amount, asset: 'eth' })
-      
-      // 成功后清空输入并刷新
-      setTimeout(() => {
-        if (isConfirmed) {
-          setAmount('')
-          refetchAll()
-        }
-      }, 1000)
     } catch (submissionError) {
       const message =
         submissionError instanceof Error ? submissionError.message : 'Failed to submit redeem transaction'

@@ -4,6 +4,7 @@
  */
 
 import { useWriteContract, useWaitForTransactionReceipt, useChainId, useReadContract, useAccount } from 'wagmi'
+import { useCallback } from 'react'
 import { parseEther, type Address, maxUint256 } from 'viem'
 import { erc20Abi } from '../config/abis'
 import { l2SlpxAbi } from '../config/abis'
@@ -56,7 +57,7 @@ export function useRedeemEVM() {
     }
   })
 
-  const redeem = async ({ amount, asset }: RedeemEVMParams) => {
+  const redeem = useCallback(async ({ amount, asset }: RedeemEVMParams) => {
     try {
       const amountWei = parseEther(amount)
       const vTokenAddress = asset === 'eth' ? vethToken?.address : vdotToken?.address
@@ -95,7 +96,23 @@ export function useRedeemEVM() {
       console.error('Redeem error:', err)
       throw err
     }
-  }
+  }, [vethToken?.address, vdotToken?.address, vethAllowance, vdotAllowance, writeContract, l2SlpxAddress])
+
+  const needsApproval = useCallback((amount: string, asset: 'eth' | 'dot') => {
+    // 安全地处理空字符串或无效输入
+    if (!amount || amount === '0' || isNaN(Number(amount))) {
+      return false
+    }
+    
+    try {
+      const amountWei = parseEther(amount)
+      const currentAllowance = asset === 'eth' ? vethAllowance : vdotAllowance
+      return !currentAllowance || currentAllowance < amountWei
+    } catch (error) {
+      console.error('Error parsing amount:', error)
+      return false
+    }
+  }, [vethAllowance, vdotAllowance])
 
   return {
     redeem,
@@ -109,20 +126,6 @@ export function useRedeemEVM() {
     vdotAllowance,
     refetchVethAllowance,
     refetchVdotAllowance,
-    needsApproval: (amount: string, asset: 'eth' | 'dot') => {
-      // 安全地处理空字符串或无效输入
-      if (!amount || amount === '0' || isNaN(Number(amount))) {
-        return false
-      }
-      
-      try {
-        const amountWei = parseEther(amount)
-        const currentAllowance = asset === 'eth' ? vethAllowance : vdotAllowance
-        return !currentAllowance || currentAllowance < amountWei
-      } catch (error) {
-        console.error('Error parsing amount:', error)
-        return false
-      }
-    },
+    needsApproval,
   }
 }
