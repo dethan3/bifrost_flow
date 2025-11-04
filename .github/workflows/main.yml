@@ -26,6 +26,8 @@ jobs:
               run: |
                   pnpm i --frozen-lockfile
                   pnpm build
+              env:
+                  VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
 
             - name: Deploy to GitHub pages
               uses: peaceiris/actions-gh-pages@v4
