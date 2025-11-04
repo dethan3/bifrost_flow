@@ -6,6 +6,8 @@ import { InfoCard } from './components/InfoCard'
 import { TransactionToast } from './components/TransactionToast'
 
 function App() {
+  const currentYear = new Date().getFullYear()
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 text-white">
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -17,23 +19,31 @@ function App() {
       <main className="relative mx-auto w-full max-w-7xl px-4 pb-20 pt-8 sm:px-6 sm:pb-16 sm:pt-10 lg:px-8">
         <Header />
 
-        {/* Main content: two-column layout */}
-        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_400px] xl:gap-8">
-          {/* Left column: staking actions */}
-          <div className="space-y-6">
-            <StakingPanel />
-            <InfoCard />
+        {/* Main content */}
+        <div className="mt-8 space-y-6">
+          {/* Primary dashboard row */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,_2fr)_minmax(0,_1fr)] xl:items-stretch">
+            <div className="h-full">
+              <StakingPanel />
+            </div>
+            <div className="grid h-full grid-cols-1 gap-6">
+              <BalanceCard />
+              <EarningsCard />
+            </div>
           </div>
 
-          {/* Right column: info cards */}
-          <div className="space-y-6">
-            <BalanceCard />
-            <EarningsCard />
+          {/* Secondary information row */}
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3 xl:[&>*]:h-full">
+            <div className="xl:col-span-3">
+              <InfoCard />
+            </div>
           </div>
         </div>
 
         <footer className="mt-8 text-center text-xs text-white/50 sm:mt-12 sm:text-sm">
-          <p>Liquid staking gateway for the omnichain world</p>
+          <p className="font-medium text-white/80">
+            © {currentYear} Bifrost Flow. All rights reserved.
+          </p>
         </footer>
       </main>
 

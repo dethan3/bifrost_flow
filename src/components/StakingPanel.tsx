@@ -8,11 +8,11 @@ export const StakingPanel = () => {
   const [activeTab, setActiveTab] = useState<TabType>('mint')
 
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_25px_65px_-45px_rgba(168,85,247,0.7)]">
+    <section className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_25px_65px_-45px_rgba(168,85,247,0.7)]">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(236,72,153,0.12),_transparent_60%)]" />
       
-      <div className="relative">
+      <div className="relative flex flex-1 flex-col">
         {/* Tabs header */}
         <div className="flex border-b border-white/10">
           <button
@@ -50,7 +50,7 @@ export const StakingPanel = () => {
         </div>
 
         {/* Content area */}
-        <div className="p-6 sm:p-9">
+        <div className="flex-1 p-6 sm:p-9">
           {activeTab === 'mint' ? <MintForm /> : <RedeemForm />}
         </div>
       </div>

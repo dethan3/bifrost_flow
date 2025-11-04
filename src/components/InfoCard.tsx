@@ -4,10 +4,10 @@ export const InfoCard = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.08),_transparent_60%)]" />
       
       <div className="relative space-y-5">
-        <header>
-          <h2 className="text-lg font-semibold text-white">Why Liquid Staking?</h2>
+        <header className="text-center">
+          <h2 className="text-lg font-semibold text-white">Why Bifrost Flow?</h2>
           <p className="mt-1 text-sm text-purple-100/60">
-            Unlock the full potential of your assets
+            A production-grade cockpit that keeps liquid staking intuitive, transparent, and fast.
           </p>
         </header>
 
@@ -19,9 +19,9 @@ export const InfoCard = () => {
                 💎
               </div>
               <div>
-                <h3 className="font-semibold text-white">Maintain Liquidity</h3>
+                <h3 className="font-semibold text-white">Seamless Wallet Onboarding</h3>
                 <p className="mt-1 text-xs text-purple-100/70">
-                  Your vETH tokens remain tradeable and usable in DeFi while earning staking rewards
+                  RainbowKit + WalletConnect support MetaMask, Coinbase, Rainbow, and more without extra setup.
                 </p>
               </div>
             </div>
@@ -34,9 +34,9 @@ export const InfoCard = () => {
                 🛡️
               </div>
               <div>
-                <h3 className="font-semibold text-white">Secure & Decentralized</h3>
+                <h3 className="font-semibold text-white">Resilient Network Access</h3>
                 <p className="mt-1 text-xs text-purple-100/70">
-                  Built on Bifrost's battle-tested infrastructure with multi-chain support
+                  Automatic RPC failover keeps Bifrost telemetry online and surfaces endpoint health in real time.
                 </p>
               </div>
             </div>
@@ -49,9 +49,9 @@ export const InfoCard = () => {
                 ⚡
               </div>
               <div>
-                <h3 className="font-semibold text-white">Instant Rewards</h3>
+                <h3 className="font-semibold text-white">Actionable Portfolio Insights</h3>
                 <p className="mt-1 text-xs text-purple-100/70">
-                  Start earning immediately with no lock-up periods or minimum requirements
+                  Native ETH, vETH, and rewards forecasts refresh together so you can react without leaving the page.
                 </p>
               </div>
             </div>
@@ -61,7 +61,7 @@ export const InfoCard = () => {
         {/* Footer tip */}
         <div className="rounded-lg border border-indigo-400/20 bg-indigo-500/5 px-4 py-3">
           <p className="text-xs text-indigo-200/80">
-            <span className="font-semibold">💡 Pro Tip:</span> You can redeem your vETH back to ETH anytime. The exchange rate reflects your accumulated staking rewards.
+            <span className="font-semibold">💡 Pro Tip:</span> Use the mint/redeem presets to model new positions, then watch the dashboard update instantly after each transaction.
           </p>
         </div>
       </div>
