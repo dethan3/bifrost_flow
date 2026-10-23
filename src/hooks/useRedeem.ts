@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
+import type { SubmittableResult } from '@polkadot/api/submittable'
 import { useBifrost } from './useBifrost'
 import { useWallet } from './useWallet'
 import { useAppStore } from '../store'
 import type { RedeemParams } from '../types'
 
-const decodeDispatchError = (dispatchError: any, api: ReturnType<typeof useBifrost>['api']): string => {
+const decodeDispatchError = (dispatchError: SubmittableResult['dispatchError'], api: ReturnType<typeof useBifrost>['api']): string => {
   if (!dispatchError) {
     return 'Unknown error'
   }
@@ -75,7 +76,7 @@ export const useRedeem = () => {
         }
 
         extrinsic
-          .signAndSend(account.address, { signer }, (result: any) => {
+          .signAndSend(account.address, { signer }, (result) => {
             const txHash = result.txHash?.toHex()
 
             if (result.dispatchError) {
@@ -97,10 +98,10 @@ export const useRedeem = () => {
               resolve()
             }
           })
-          .then((unsub: any) => {
+          .then((unsub) => {
             unsubscribe = unsub
           })
-          .catch((signError: any) => {
+          .catch((signError: unknown) => {
             cleanup()
             reject(signError)
           })
