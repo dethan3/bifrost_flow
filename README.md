@@ -44,8 +44,8 @@ Bifrost Flow demonstrates how staking UX can stay cinematic while remaining prod
 ## Getting Started
 
 ### Prerequisites
-- Node.js ≥ 18 (LTS recommended)
-- pnpm ≥ 9
+- Node.js 22.23.4 or a newer 22.x patch (see `.nvmrc`)
+- pnpm 10.28.2
 - Recommended: a Chromium/Firefox browser with an injected EVM wallet (MetaMask, Coinbase, etc.)
 
 ### Quick Start
