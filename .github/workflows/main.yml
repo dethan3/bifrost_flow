@@ -5,6 +5,8 @@ on:
             - '**'
 jobs:
     Build-and-Deploy:
+        # Pull requests are validated by check.yml without a deployment environment.
+        if: github.ref == 'refs/heads/evm'
         runs-on: ubuntu-latest
         environment: github-pages
         permissions:
